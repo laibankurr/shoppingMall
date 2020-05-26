@@ -1,0 +1,7 @@
+mongoDB_Info.js
+/node_modules
+/build
+develop.js
+.DS_Store
+.vscode
+new.js
