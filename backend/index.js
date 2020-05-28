@@ -22,7 +22,7 @@ mongoose
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.log(err));
 
-app.get("/auth", auth, (req, res) => {
+app.get("/api/auth", auth, (req, res) => {
   res.status(200).json({
     _id: req.user._id,
     isAdmin: req.user.role === 0 ? false : true,
@@ -37,7 +37,7 @@ app.get("/auth", auth, (req, res) => {
   });
 });
 
-app.post("/register", (req, res) => {
+app.post("/api/register", (req, res) => {
   const user = new User(req.body);
 
   user.save((err, userData) => {
@@ -51,7 +51,7 @@ app.post("/register", (req, res) => {
   });
 });
 
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   User.findOne({ email: req.body.email }, (err, matchedData) => {
     if (!matchedData) {
       return res.json({
@@ -83,7 +83,7 @@ app.post("/login", (req, res) => {
   });
 });
 
-app.get("/logout", auth, (req, res) => {
+app.get("/api/logout", auth, (req, res) => {
   User.findOneAndUpdate(
     { _id: req.user._id },
     { token: "", tokenExp: "" },

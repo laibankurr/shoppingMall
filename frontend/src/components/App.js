@@ -1,16 +1,16 @@
 import React from "react";
 import { Route, Switch } from "react-router-dom";
-import login from "./login";
-import home from "./home";
-import register from "./register";
+import Login from "./Login";
+import Home from "./Home";
+import Register from "./Register";
 
 const App = () => {
   return (
-    <div>
+    <div style={{ paddingTop: "69px", minHeight: "calc(100vh - 80px)" }}>
       <Switch>
-        <Route exact path="/" component={home} />
-        <Route exact path="/login" component={login} />
-        <Route exact path="/register" component={register} />
+        <Route exact path="/" component={Home} />
+        <Route exact path="/login" component={Login} />
+        <Route exact path="/register" component={Register} />
       </Switch>
     </div>
   );
