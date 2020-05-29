@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { registers } from "../_actions/actions";
+import { withRouter } from "react-router-dom";
 
 const Register = (props) => {
   const dispatch = useDispatch();
@@ -38,8 +39,10 @@ const Register = (props) => {
     };
 
     dispatch(registers(body)).then((response) => {
-      if (response.payload.registerSuccess) {
+      if (response.payload.registerSuccess === true) {
         props.history.push("/login");
+      } else if (response.payload.registerSuccess === false) {
+        alert("This email is already registered. Please use another email.");
       } else {
         alert("An error has occurred. Please try again.");
       }
@@ -99,4 +102,4 @@ const Register = (props) => {
   );
 };
 
-export default Register;
+export default withRouter(Register);

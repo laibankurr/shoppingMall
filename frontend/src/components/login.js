@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { logins } from "../_actions/actions";
-//import axios from "axios";
+import { withRouter } from "react-router-dom";
 
 const Login = (props) => {
   const dispatch = useDispatch();
@@ -21,16 +21,23 @@ const Login = (props) => {
     });
   };
 
-  const handleSubmit = (event) => {
+  const submitHandler = (event) => {
     event.preventDefault();
 
     let body = userInfo;
 
     dispatch(logins(body)).then((response) => {
-      if (response.payload.loginSuccess) {
+      if (response.payload.loginSuccess === true) {
         props.history.push("/");
+      } else if (response.payload.loginSuccess === false) {
+        if (response.payload.message === "Wrong email") {
+          alert("Unable to find this email. Please try again");
+        }
+        if (response.payload.message === "Wrong password") {
+          alert("Wrong password. Please check again.");
+        }
       } else {
-        alert("An error has occurred. Please try again.");
+        alert("Failed to Sign in. Please try again.");
       }
     });
   };
@@ -47,7 +54,7 @@ const Login = (props) => {
     >
       <form
         style={{ display: "flex", flexDirection: "column" }}
-        onSubmit={handleSubmit}
+        onSubmit={submitHandler}
       >
         <label>Email</label>
         <input
@@ -72,4 +79,4 @@ const Login = (props) => {
   );
 };
 
-export default Login;
+export default withRouter(Login);

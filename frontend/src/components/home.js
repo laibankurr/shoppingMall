@@ -1,6 +1,7 @@
 import React from "react";
 import { FaLaugh } from "react-icons/fa";
 import axios from "axios";
+import { withRouter } from "react-router-dom";
 
 const Home = (props) => {
   const handleClick = () => {
@@ -31,4 +32,4 @@ const Home = (props) => {
   );
 };
 
-export default Home;
+export default withRouter(Home);

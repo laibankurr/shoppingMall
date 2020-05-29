@@ -32,20 +32,26 @@ app.get("/api/auth", auth, (req, res) => {
     lastname: req.user.lastName,
     role: req.user.role,
     image: req.user.image,
-    //cart: req.user.cart,
-    //history: req.user.history,
   });
 });
 
 app.post("/api/register", (req, res) => {
-  const user = new User(req.body);
-
-  user.save((err, userData) => {
-    if (err) {
-      return res.json({ success: false, err });
+  User.findOne({ email: req.body.email }, (err, matchedData) => {
+    if (matchedData) {
+      return res.json({
+        registerSuccess: false,
+      });
     } else {
-      return res.status(200).json({
-        registerSuccess: true,
+      const user = new User(req.body);
+
+      user.save((err, userData) => {
+        if (err) {
+          return res.json({ success: false, err });
+        } else {
+          return res.status(200).json({
+            registerSuccess: true,
+          });
+        }
       });
     }
   });
@@ -56,14 +62,14 @@ app.post("/api/login", (req, res) => {
     if (!matchedData) {
       return res.json({
         loginSuccess: false,
-        message: "Unable to find registered email.",
+        message: "Wrong email",
       });
     } else {
       matchedData.checkPassword(req.body.password, (err, isMatch) => {
         if (!isMatch) {
           return res.json({
             loginSuccess: false,
-            message: "Wrong password. Please check again.",
+            message: "Wrong password",
           });
         } else {
           matchedData.generateToken((err, userData) => {
