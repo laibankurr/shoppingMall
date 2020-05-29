@@ -45,7 +45,7 @@ app.post("/api/register", (req, res) => {
       return res.json({ success: false, err });
     } else {
       return res.status(200).json({
-        success: true,
+        registerSuccess: true,
       });
     }
   });
