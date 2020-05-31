@@ -1,10 +1,12 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 import React, { useEffect } from "react";
 import { authentications } from "../_actions/actions";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function (SpecificComponent, option, adminRoute = null) {
   function AuthenticationCheck(props) {
+    let user = useSelector((state) => state.userInfo);
+
     const dispatch = useDispatch();
 
     useEffect(() => {
@@ -25,7 +27,7 @@ export default function (SpecificComponent, option, adminRoute = null) {
       });
     }, []);
 
-    return <SpecificComponent />;
+    return <SpecificComponent {...props} user={user} />;
   }
   return AuthenticationCheck;
 }
