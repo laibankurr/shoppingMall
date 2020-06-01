@@ -4,13 +4,21 @@ import Login from "./Login";
 import Home from "./Home";
 import Register from "./Register";
 import TopBar from "./TopBar";
+import BottomBar from "./BottomBar";
+import UploadItem from "./UploadItem";
 import authentication from "../HOC/authentication";
+import styled from "styled-components";
+
+const StyledBody = styled.div`
+  padding-top: 69px;
+  min-height: calc(100vh - 80px);
+`;
 
 const App = () => {
   return (
     <>
       <TopBar />
-      <div style={{ paddingTop: "69px", minHeight: "calc(100vh - 80px)" }}>
+      <StyledBody>
         <Switch>
           <Route exact path="/" component={authentication(Home, null)} />
           <Route exact path="/login" component={authentication(Login, false)} />
@@ -19,8 +27,14 @@ const App = () => {
             path="/register"
             component={authentication(Register, false)}
           />
+          <Route
+            exact
+            path="/uploadItem"
+            component={authentication(UploadItem, true)}
+          />
         </Switch>
-      </div>
+      </StyledBody>
+      <BottomBar />
     </>
   );
 };

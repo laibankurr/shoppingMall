@@ -35,6 +35,13 @@ const RightMenu = (props) => {
             Logout
           </button>
         </Menu.Item>
+
+        <Menu.Item key="upload">
+          <a href="/uploadItem">
+            {/* <Icon type="upload" theme="outlined" /> */}
+            Upload Product
+          </a>
+        </Menu.Item>
       </Menu>
     );
   }

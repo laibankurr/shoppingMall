@@ -7,10 +7,23 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { auth } = require("./middleWare/auth");
 const { User } = require("./model/user");
+const multer = require("multer");
+
+var storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, "uploads/");
+  },
+  filename: function (req, file, cb) {
+    cb(null, `${Date.now()}_${file.originalname}`);
+  },
+});
+
+var upload = multer({ storage: storage }).single("file");
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use("/uploads", express.static("uploads"));
 
 mongoose
   .connect(dbURI.mongoDB_URI, {
@@ -103,6 +116,19 @@ app.get("/api/logout", auth, (req, res) => {
       }
     }
   );
+});
+
+app.post("/api/image", (req, res) => {
+  upload(req, res, (err) => {
+    if (err) {
+      return req.json({ success: false, err });
+    }
+    return res.json({
+      success: true,
+      filePath: res.req.file.path,
+      fileName: res.req.file.filename,
+    });
+  });
 });
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

@@ -116,8 +116,8 @@ const Login = (props) => {
                     type="primary"
                     className="login-form-button"
                     style={{ minWidth: "100%" }}
+                    onClick={handleSubmit}
                     disabled={isSubmitting}
-                    onSubmit={handleSubmit}
                   >
                     Log in
                   </Button>
