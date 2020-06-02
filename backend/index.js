@@ -197,4 +197,64 @@ app.post("/api/items", (req, res) => {
   }
 });
 
+app.get("/api/itemsbyid", (req, res) => {
+  let type = req.query.type;
+  let itemIds = req.query.id;
+
+  if (type === "array") {
+    let ids = req.query.id.split(",");
+    itemIds = ids.map((item) => {
+      return item;
+    });
+  }
+
+  Item.find({ _id: { $in: itemIds } })
+    .populate("writer")
+    .exec((err, item) => {
+      if (err) return res.status(400).send(err);
+      return res.status(200).send(item);
+    });
+});
+
+app.post("/api/addToCart", auth, (req, res) => {
+  User.findOne({ _id: req.user._id }, (err, userInfo) => {
+    let existence = false;
+    userInfo.cart.forEach((item) => {
+      if (item.id === req.body.itemId) {
+        existence = true;
+      }
+    });
+
+    if (existence) {
+      User.findOneAndUpdate(
+        { _id: req.user._id, "cart.id": req.body.productId },
+        { $inc: { "cart.$.quantity": 1 } },
+        { new: true },
+        (err, userInfo) => {
+          if (err) return res.status(200).json({ success: false, err });
+          res.status(200).send(userInfo.cart);
+        }
+      );
+    } else {
+      User.findOneAndUpdate(
+        { _id: req.user._id },
+        {
+          $push: {
+            cart: {
+              id: req.body.itemId,
+              quantity: 1,
+              date: Date.now(),
+            },
+          },
+        },
+        { new: true },
+        (err, userInfo) => {
+          if (err) return res.status(400).json({ success: false, err });
+          res.status(200).send(userInfo.cart);
+        }
+      );
+    }
+  });
+});
+
 app.listen(port, () => console.log(`Server is running on port ${port}`));

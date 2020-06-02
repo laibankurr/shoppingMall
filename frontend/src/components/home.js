@@ -111,7 +111,7 @@ const Home = (props) => {
       <Col lg={6} md={8} xs={24} key={index}>
         <Card
           cover={
-            <a href={`/item/${item._id}`}>
+            <a href={`/${item._id}`}>
               <div>
                 <Carousel autoplay>
                   {item.images.map((image, index) => (

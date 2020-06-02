@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { Form, Input } from "antd";
 import UploadImage from "./UploadImage";
 import Axios from "axios";
+import { withRouter } from "react-router-dom";
 
 const { TextArea } = Input;
 
@@ -118,4 +119,4 @@ const UploadItem = (props) => {
   );
 };
 
-export default UploadItem;
+export default withRouter(UploadItem);

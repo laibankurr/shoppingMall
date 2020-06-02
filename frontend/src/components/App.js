@@ -6,6 +6,7 @@ import Register from "./Register";
 import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
 import UploadItem from "./UploadItem";
+import ItemInfo from "./ItemInfo";
 import authentication from "../HOC/authentication";
 import styled from "styled-components";
 
@@ -31,6 +32,11 @@ const App = () => {
             exact
             path="/uploadItem"
             component={authentication(UploadItem, true)}
+          />
+          <Route
+            exact
+            path="/:itemId"
+            component={authentication(ItemInfo, null)}
           />
         </Switch>
       </StyledBody>

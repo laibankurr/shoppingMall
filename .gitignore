@@ -1,6 +1,7 @@
 mongoDB_Info.js
 /node_modules
 /build
+/uploads
 develop.js
 .DS_Store
 .vscode
