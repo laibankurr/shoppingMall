@@ -61,7 +61,7 @@ const UploadItem = (props) => {
       size: itemInfo.size,
     };
 
-    Axios.post("/api/product", body).then((response) => {
+    Axios.post("/api/item", body).then((response) => {
       if (response.data.success) {
         alert("Product upload was successful");
         props.history.push("/");

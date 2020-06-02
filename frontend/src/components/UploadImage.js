@@ -20,7 +20,7 @@ const ViewBox = styled.div`
   justify-content: center;
   align-items: center;
   width: 100%;
-  height: 240px;
+  height: 400px;
   overflow-x: scroll;
 `;
 
@@ -65,7 +65,11 @@ const UploadImage = (props) => {
         {images.map((image, index) => (
           <div onClick={() => deleteHandle(image)} key={index}>
             <img
-              style={{ minWidth: "300px", width: "80%", cursor: "pointer" }}
+              style={{
+                minWidth: "300px",
+                width: "300px",
+                cursor: "pointer",
+              }}
               src={`http://localhost:5000/${image}`}
               alt="img"
             />

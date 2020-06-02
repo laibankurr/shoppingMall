@@ -7,6 +7,7 @@ const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { auth } = require("./middleWare/auth");
 const { User } = require("./model/user");
+const { Item } = require("./model/item");
 const multer = require("multer");
 
 var storage = multer.diskStorage({
@@ -129,6 +130,71 @@ app.post("/api/image", (req, res) => {
       fileName: res.req.file.filename,
     });
   });
+});
+
+app.post("/api/item", (req, res) => {
+  const item = new Item(req.body);
+
+  item.save((err) => {
+    if (err) return res.status(400).json({ success: false, err });
+    return res.status(200).json({ success: true });
+  });
+});
+
+app.post("/api/items", (req, res) => {
+  let limit = req.body.limit ? parseInt(req.body.limit) : 12;
+  let skip = req.body.skip ? parseInt(req.body.skip) : 0;
+  let term = req.body.searchTerm;
+
+  let findArgs = {};
+
+  for (let key in req.body.options) {
+    if (req.body.options[key].length > 0) {
+      if (key === "price") {
+        findArgs[key] = {
+          $gte: req.body.options[key][0],
+          $lte: req.body.options[key][1],
+        };
+      } else {
+        findArgs[key] = req.body.options[key];
+      }
+    }
+  }
+
+  if (term) {
+    Item.find(findArgs)
+      .find({ title: { $regex: term } })
+      .populate("writer")
+      .skip(skip)
+      .limit(limit)
+      .exec((err, itemInfo) => {
+        if (err) {
+          return res.status(400).json({ success: false, err });
+        } else {
+          res.status(200).json({
+            success: true,
+            itemInfo,
+            itemQuantity: itemInfo.length,
+          });
+        }
+      });
+  } else {
+    Item.find(findArgs)
+      .populate("writer")
+      .skip(skip)
+      .limit(limit)
+      .exec((err, itemInfo) => {
+        if (err) {
+          return res.status(400).json({ success: false, err });
+        } else {
+          res.status(200).json({
+            success: true,
+            itemInfo,
+            itemQuantity: itemInfo.length,
+          });
+        }
+      });
+  }
 });
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));
