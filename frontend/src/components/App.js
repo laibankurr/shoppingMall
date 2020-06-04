@@ -7,7 +7,8 @@ import TopBar from "./TopBar";
 import BottomBar from "./BottomBar";
 import UploadItem from "./UploadItem";
 import ItemInfo from "./ItemInfo";
-import authentication from "../HOC/authentication";
+import Cart from "./Cart";
+import Auth from "../HOC/Auth";
 import styled from "styled-components";
 
 const StyledBody = styled.div`
@@ -21,23 +22,12 @@ const App = () => {
       <TopBar />
       <StyledBody>
         <Switch>
-          <Route exact path="/" component={authentication(Home, null)} />
-          <Route exact path="/login" component={authentication(Login, false)} />
-          <Route
-            exact
-            path="/register"
-            component={authentication(Register, false)}
-          />
-          <Route
-            exact
-            path="/uploadItem"
-            component={authentication(UploadItem, true)}
-          />
-          <Route
-            exact
-            path="/:itemId"
-            component={authentication(ItemInfo, null)}
-          />
+          <Route exact path="/" component={Auth(Home, null)} />
+          <Route exact path="/login" component={Auth(Login, false)} />
+          <Route exact path="/register" component={Auth(Register, false)} />
+          <Route exact path="/uploadItem" component={Auth(UploadItem, true)} />
+          <Route exact path="/cart" component={Auth(Cart, true)} />
+          <Route exact path="/:itemId" component={Auth(ItemInfo, null)} />
         </Switch>
       </StyledBody>
       <BottomBar />

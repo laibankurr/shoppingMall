@@ -6,8 +6,8 @@ const dbURI = require("./dbSelect");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { auth } = require("./middleWare/auth");
-const { User } = require("./model/user");
-const { Item } = require("./model/item");
+const { User } = require("./models/user");
+const { Item } = require("./models/item");
 const multer = require("multer");
 
 var storage = multer.diskStorage({
@@ -46,6 +46,8 @@ app.get("/api/auth", auth, (req, res) => {
     lastname: req.user.lastName,
     role: req.user.role,
     image: req.user.image,
+    cart: req.user.cart,
+    history: req.user.history,
   });
 });
 
@@ -227,7 +229,7 @@ app.post("/api/addToCart", auth, (req, res) => {
 
     if (existence) {
       User.findOneAndUpdate(
-        { _id: req.user._id, "cart.id": req.body.productId },
+        { _id: req.user._id, "cart.id": req.body.itemId },
         { $inc: { "cart.$.quantity": 1 } },
         { new: true },
         (err, userInfo) => {
@@ -255,6 +257,99 @@ app.post("/api/addToCart", auth, (req, res) => {
       );
     }
   });
+});
+
+app.get("/api/deleteFromCart", auth, (req, res) => {
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    {
+      $pull: { cart: { id: req.query.id } },
+    },
+    { new: true },
+    (err, userInfo) => {
+      let cart = userInfo.cart;
+      let array = cart.map((item) => {
+        return item.id;
+      });
+
+      Item.find({ _id: { $in: array } })
+        .populate("writer")
+        .exec((err, itemInfo) => {
+          return res.status(200).json({
+            itemInfo,
+            cart,
+          });
+        });
+    }
+  );
+});
+
+app.post("/api/purchase", auth, (req, res) => {
+  let history = [];
+  let transactionData = {};
+
+  req.body.cartDetail.forEach((item) => {
+    history.push({
+      dateOfPurchase: Date.now(),
+      name: item.title,
+      id: item._id,
+      price: item.price,
+      quantity: item.quantity,
+      paymentId: req.body.paymentData.paymentID,
+    });
+  });
+
+  transactionData.user = {
+    id: req.user._id,
+    name: req.user.firstName,
+    email: req.user.email,
+  };
+
+  transactionData.data = req.body.paymentData;
+  transactionData.product = history;
+
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $push: { history: history }, $set: { cart: [] } },
+    { new: true },
+    (err, user) => {
+      if (err) return res.json({ success: false, err });
+
+      const payment = new Payment(transactionData);
+      payment.save((err, doc) => {
+        if (err) return res.json({ success: false, err });
+
+        let items = [];
+        doc.item.forEach((info) => {
+          items.push({ id: info.id, quantity: info.quantity });
+        });
+
+        async.eachSeries(
+          items,
+          (item, callback) => {
+            Item.update(
+              { _id: item.id },
+              {
+                $inc: {
+                  sold: item.quantity,
+                },
+              },
+              { new: false },
+              callback
+            );
+          },
+          (err) => {
+            if (err) return res.status(400).json({ success: false, err });
+            res.status(200).json({
+              success: true,
+              cart: user.cart,
+              cartDetail: [],
+            });
+          }
+        );
+      });
+    }
+  );
 });
 
 app.listen(port, () => console.log(`Server is running on port ${port}`));

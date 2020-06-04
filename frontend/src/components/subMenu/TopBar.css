@@ -50,7 +50,6 @@
   padding: 6px;
   margin-top: 8px;
   display: none !important;
-  /* use of important to overwrite ant-btn */
   background: #3e91f7;
 }
 
@@ -58,16 +57,15 @@
   padding: 0 !important;
 }
 
-/* align header of Drawer with header of page */
 .menu_drawer .ant-drawer-header {
   padding: 14px 24px !important;
 }
 
-.link-button {
+/* .link-button {
   background-color: transparent;
   border: none;
+  padding: 0;
   cursor: pointer;
-  text-decoration: underline;
   display: inline;
   margin: 0;
   padding: 0;
@@ -76,7 +74,7 @@
 .link-button:hover,
 .link-button:focus {
   text-decoration: none;
-}
+}  */
 
 @media (max-width: 767px) {
   .menu__mobile-button {
