@@ -97,9 +97,9 @@ export function deleteItem(itemId) {
   };
 }
 
-export function purchase(data) {
+export function purchase(body) {
   const request = axios
-    .post("/api/purchase", data)
+    .post("/api/purchase", body)
     .then((response) => response.data);
 
   return {

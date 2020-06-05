@@ -2,8 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { getItem, deleteItem, purchase } from "../_actions/actions";
 import { Empty, Result } from "antd";
+import { GiftTwoTone } from "@ant-design/icons";
 import styled from "styled-components";
-//import Paypal from "../../utils/Paypal";
+import Paypal from "./Paypal";
 
 const Cart = (props) => {
   const dispatch = useDispatch();
@@ -49,10 +50,10 @@ const Cart = (props) => {
     });
   };
 
-  const transactionSuccess = (data) => {
+  const purchaseSuccess = (payment) => {
     dispatch(
       purchase({
-        paymentData: data,
+        paymentInfo: payment,
         cartDetail: props.user.cartDetail,
       })
     ).then((response) => {
@@ -116,13 +117,17 @@ const Cart = (props) => {
           <h2>TotaL Price: $ {Total}</h2>
         </div>
       ) : ShowSuccess ? (
-        <Result status="success" title="Purchase was successful." />
+        <Result icon={<GiftTwoTone />} title="Purchase was successful." />
       ) : (
         <>
           <br />
-          <Empty description={false} />
+          <Empty
+            image={Empty.PRESENTED_IMAGE_SIMPLE}
+            description={<span>No Item</span>}
+          />
         </>
       )}
+      {ShowTotal && <Paypal total={Total} onSuccess={purchaseSuccess} />}
     </div>
   );
 };

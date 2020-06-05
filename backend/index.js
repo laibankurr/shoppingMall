@@ -1,3 +1,4 @@
+//require('dotenv').config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
@@ -8,7 +9,9 @@ const cookieParser = require("cookie-parser");
 const { auth } = require("./middleWare/auth");
 const { User } = require("./models/user");
 const { Item } = require("./models/item");
+const { Payment } = require("./models/Payment");
 const multer = require("multer");
+const async = require("async");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -288,14 +291,21 @@ app.post("/api/purchase", auth, (req, res) => {
   let history = [];
   let transactionData = {};
 
+  let today = new Date();
+  let date =
+    today.getFullYear() + "-" + (today.getMonth() + 1) + "-" + today.getDate();
+  let time =
+    today.getHours() + ":" + today.getMinutes() + ":" + today.getSeconds();
+  let dateTime = date + " " + time;
+
   req.body.cartDetail.forEach((item) => {
     history.push({
-      dateOfPurchase: Date.now(),
+      dateOfPurchase: dateTime,
       name: item.title,
       id: item._id,
       price: item.price,
       quantity: item.quantity,
-      paymentId: req.body.paymentData.paymentID,
+      paymentId: req.body.paymentInfo.paymentID,
     });
   });
 
@@ -305,8 +315,8 @@ app.post("/api/purchase", auth, (req, res) => {
     email: req.user.email,
   };
 
-  transactionData.data = req.body.paymentData;
-  transactionData.product = history;
+  transactionData.data = req.body.paymentInfo;
+  transactionData.item = history;
 
   User.findOneAndUpdate(
     { _id: req.user._id },
@@ -316,12 +326,12 @@ app.post("/api/purchase", auth, (req, res) => {
       if (err) return res.json({ success: false, err });
 
       const payment = new Payment(transactionData);
-      payment.save((err, doc) => {
+      payment.save((err, document) => {
         if (err) return res.json({ success: false, err });
 
         let items = [];
-        doc.item.forEach((info) => {
-          items.push({ id: info.id, quantity: info.quantity });
+        document.item.forEach((data) => {
+          items.push({ id: data.id, quantity: data.quantity });
         });
 
         async.eachSeries(

@@ -9,6 +9,7 @@ import {
   PoweroffOutlined,
   UserOutlined,
   UserAddOutlined,
+  HistoryOutlined,
 } from "@ant-design/icons";
 import { Badge } from "antd";
 
@@ -51,6 +52,13 @@ const RightMenu = (props) => {
           </a>
         </Menu.Item>
 
+        <Menu.Item key="buyHistory">
+          <a href="buyHistory">
+            <HistoryOutlined style={{ fontSize: 20 }} />
+            HISTORY
+          </a>
+        </Menu.Item>
+
         <Menu.Item key="cart">
           <a href="/cart">
             <ShoppingOutlined style={{ fontSize: 20 }} />
@@ -67,7 +75,7 @@ const RightMenu = (props) => {
         </Menu.Item>
 
         <Menu.Item key="logout">
-          <a href="#" onClick={logoutHandler}>
+          <a href="/" onClick={logoutHandler}>
             <PoweroffOutlined style={{ fontSize: 20 }} />
             LOGOUT
           </a>
