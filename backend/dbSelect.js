@@ -2,7 +2,7 @@ const dbIdPw = require("./mongoDB_Info");
 
 if (process.env.NODE_ENV === "production") {
   module.exports = {
-    mongoDB_URI: process.env.MONGO_URI,
+    mongoDB_URI: process.env.MONGODB_URI,
   };
 } else {
   module.exports = {

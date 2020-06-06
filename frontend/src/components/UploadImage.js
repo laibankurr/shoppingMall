@@ -4,17 +4,6 @@ import axios from "axios";
 import styled from "styled-components";
 import { Button } from "antd";
 
-/* const UploadButton = styled.div`
-  width: 80px;
-  height: 30px;
-  border: 1px solid lightgray;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  font-weight: bold;
-`; */
-
 const ViewBox = styled.div`
   display: flex;
   justify-content: center;

@@ -28,14 +28,14 @@ const RightMenu = (props) => {
   if (user.userData && !user.userData.isAuth) {
     return (
       <Menu mode={props.mode}>
-        <Menu.Item key="mail">
-          <a href="/Login">
+        <Menu.Item key="login">
+          <a href="/login">
             <UserOutlined style={{ fontSize: 20 }} />
             SIGNIN
           </a>
         </Menu.Item>
-        <Menu.Item key="app">
-          <a href="/Register">
+        <Menu.Item key="register">
+          <a href="/register">
             <UserAddOutlined style={{ fontSize: 20 }} />
             SIGNUP
           </a>
@@ -53,7 +53,7 @@ const RightMenu = (props) => {
         </Menu.Item>
 
         <Menu.Item key="buyHistory">
-          <a href="buyHistory">
+          <a href="/buyHistory">
             <HistoryOutlined style={{ fontSize: 20 }} />
             HISTORY
           </a>
