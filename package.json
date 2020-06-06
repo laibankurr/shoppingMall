@@ -10,8 +10,9 @@
   "scripts": {
     "start": "node backend/index.js",
     "backend": "nodemon backend/index.js",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "concurrently \"npm run backend\" \"npm run start --prefix frontend\""
+    "frontend": "npm run front --prefix frontend",
+    "dev": "concurrently \"npm run backend\" \"npm run start --prefix frontend\"",
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install --prefix frontend && npm run build --prefix frontend"
   },
   "author": "veris",
   "license": "ISC",

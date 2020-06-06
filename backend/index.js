@@ -1,9 +1,8 @@
-//require('dotenv').config();
 const express = require("express");
 const app = express();
 const port = process.env.PORT || 5000;
 const mongoose = require("mongoose");
-const dbURI = require("./dbSelect");
+//const dbURI = require("./dbSelect");
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const { auth } = require("./middleWare/auth");
@@ -12,6 +11,7 @@ const { Item } = require("./models/item");
 const { Payment } = require("./models/Payment");
 const multer = require("multer");
 const async = require("async");
+const path = require("path");
 
 var storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -30,7 +30,7 @@ app.use(cookieParser());
 app.use("/uploads", express.static("uploads"));
 
 mongoose
-  .connect(dbURI.mongoDB_URI, {
+  .connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
     useCreateIndex: true,
@@ -38,6 +38,14 @@ mongoose
   })
   .then(() => console.log("Connected to MongoDB..."))
   .catch((err) => console.log(err));
+
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("frontend/build"));
+
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "../frontend", "build", "index.html"));
+  });
+}
 
 app.get("/api/auth", auth, (req, res) => {
   res.status(200).json({
